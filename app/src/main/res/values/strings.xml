@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Simon</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_game">GameActivity</string>
+
+    //start screen activity buttons
+
+    <string name="button_start">START</string>
+    <string name="button_soundsettings">SOUND SETTINGS</string>
+    <string name="button_highscore">HIGH SCORE</string>
+
+    //game activity simon buttons
+
+    <string name="button_red"/>
+    <string name="button_green"/>
+    <string name="button_blue"/>
+    <string name="button_yellow"/>
+
+</resources>
