@@ -1,6 +1,5 @@
 package com.example.anthony.simon;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -34,7 +33,6 @@ public class GameActivity extends AppCompatActivity {
         generateMove();
         showMoves();
 
-
     }
 
     private void generateMove() {
@@ -53,7 +51,18 @@ public class GameActivity extends AppCompatActivity {
 
     private void pressButton(int i) {
 
-        ArrayButtons[i].setBackgroundColor(Color.WHITE);
+        try
+        {
+            Thread.sleep(3000);
+            // red highlighted ArrayButtons[i].setBackgroundColor(Color.rgb(176, 23,31));
+            // green highlighted ArrayButtons[i].setBackgroundColor(Color.rgb(0, 139, 69));
+           // blue highlighted ArrayButtons[i].setBackgroundColor(Color.rgb(0, 0, 128));
+            // yellow highlighted ArrayButtons[i].setBackgroundColor(Color.rgb(218, 165, 32));
+
+        } catch (InterruptedException ex) {
+
+        }
+
 
     }
 
