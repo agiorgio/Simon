@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -31,8 +32,9 @@ public class GameActivity extends AppCompatActivity {
         ArrayButtons[3] = (Button) findViewById(R.id.button_yellow);
 
         generateMove();
-        generateMove();
-        generateColor(1);
+        showMoves();
+
+
     }
 
     private void generateMove() {
@@ -42,11 +44,16 @@ public class GameActivity extends AppCompatActivity {
 
     }
 
-    private void generateColor(int i) {
+    private void showMoves() {
+        for (int i = 0; i < Moves.size(); i++)
+        {
+            pressButton(Moves.get(i));
+        }
+    }
+
+    private void pressButton(int i) {
 
         ArrayButtons[i].setBackgroundColor(Color.WHITE);
-
-        //int color = Color.argb(ArrayButtons[0].setBackgroundColor(Color.DF0101);
 
     }
 
