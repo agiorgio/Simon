@@ -1,9 +1,12 @@
 package com.example.anthony.simon;
 
+import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 
 import java.util.ArrayList;
@@ -33,6 +36,32 @@ public class GameActivity extends AppCompatActivity {
         generateMove();
         showMoves();
 
+       ArrayButtons[0].setOnClickListener(new View.OnClickListener() {
+           public void onClick(View v) {
+
+               AsyncClass AsyncInstance = new AsyncClass();
+               AsyncInstance.execute("red");
+
+           }
+       });
+
+        ArrayButtons[1].setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Perform action on click
+            }
+        });
+
+        ArrayButtons[2].setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Perform action on click
+            }
+        });
+
+        ArrayButtons[3].setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Perform action on click
+            }
+        });
     }
 
     private void generateMove() {
@@ -87,4 +116,42 @@ public class GameActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    public class AsyncClass extends AsyncTask<String, Integer, String[]> {
+
+        @Override
+        protected String[] doInBackground(String... params){
+
+            try {
+                Thread.sleep(3000);
+                publishProgress(0);
+
+                Thread.sleep(3000);
+                publishProgress(1);
+
+                Thread.sleep(3000);
+                publishProgress(2);
+
+                Thread.sleep(3000);
+                publishProgress(3);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            return new String[0];
+        }
+
+        @Override
+        protected void onPostExecute(String[] result) {
+
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+
+            ArrayButtons[values[0]].setBackgroundColor(Color.rgb(176, 23, 31));
+
+        }
+    }
+
 }
