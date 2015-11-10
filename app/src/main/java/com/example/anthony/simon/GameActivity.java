@@ -1,6 +1,5 @@
 package com.example.anthony.simon;
 
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -16,7 +15,7 @@ public class GameActivity extends AppCompatActivity {
 
     int score = 0;
     int highscore;
-    boolean gameover;
+    boolean gameOver;
     int count = 0;
     int selectedbutton;
 
@@ -34,6 +33,7 @@ public class GameActivity extends AppCompatActivity {
         ArrayButtons[3] = (Button) findViewById(R.id.button_yellow);
 
         generateMove();
+        generateMove();
         showMoves();
 
        ArrayButtons[0].setOnClickListener(new View.OnClickListener() {
@@ -41,27 +41,9 @@ public class GameActivity extends AppCompatActivity {
 
                AsyncClass AsyncInstance = new AsyncClass();
                AsyncInstance.execute("red");
-
            }
        });
 
-        ArrayButtons[1].setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // Perform action on click
-            }
-        });
-
-        ArrayButtons[2].setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // Perform action on click
-            }
-        });
-
-        ArrayButtons[3].setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // Perform action on click
-            }
-        });
     }
 
     private void generateMove() {
@@ -79,19 +61,6 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void pressButton(int i) {
-
-        try
-        {
-            Thread.sleep(3000);
-            // red highlighted ArrayButtons[i].setBackgroundColor(Color.rgb(176, 23,31));
-            // green highlighted ArrayButtons[i].setBackgroundColor(Color.rgb(0, 139, 69));
-           // blue highlighted ArrayButtons[i].setBackgroundColor(Color.rgb(0, 0, 128));
-            // yellow highlighted ArrayButtons[i].setBackgroundColor(Color.rgb(218, 165, 32));
-
-        } catch (InterruptedException ex) {
-
-        }
-
 
     }
 
@@ -123,17 +92,18 @@ public class GameActivity extends AppCompatActivity {
         protected String[] doInBackground(String... params){
 
             try {
-                Thread.sleep(3000);
+                Thread.sleep(2000);
                 publishProgress(0);
 
-                Thread.sleep(3000);
-                publishProgress(1);
+                //Thread.sleep(2000);
+                //publishProgress(1);
 
-                Thread.sleep(3000);
-                publishProgress(2);
+                //Thread.sleep(2000);
+                //publishProgress(2);
 
-                Thread.sleep(3000);
-                publishProgress(3);
+                //Thread.sleep(2000);
+                //publishProgress(3);
+
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -149,7 +119,9 @@ public class GameActivity extends AppCompatActivity {
         @Override
         protected void onProgressUpdate(Integer... values) {
 
-            ArrayButtons[values[0]].setBackgroundColor(Color.rgb(176, 23, 31));
+            ArrayButtons[values[0]].getBackground().setAlpha(80);
+            ArrayButtons[values[0]].getBackground().setAlpha(255);
+
 
         }
     }
