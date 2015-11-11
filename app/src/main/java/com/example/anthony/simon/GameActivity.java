@@ -1,10 +1,12 @@
 package com.example.anthony.simon;
 
-import android.os.AsyncTask;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 
@@ -13,11 +15,7 @@ import java.util.Random;
 
 public class GameActivity extends AppCompatActivity {
 
-    int score = 0;
-    int highscore;
-    boolean gameOver;
-    int count = 0;
-    int selectedbutton;
+    int currentMove = 0;
 
     Button ArrayButtons [] = new Button[4];
     ArrayList<Integer> Moves = new ArrayList<Integer>();
@@ -36,14 +34,39 @@ public class GameActivity extends AppCompatActivity {
         generateMove();
         showMoves();
 
-       ArrayButtons[0].setOnClickListener(new View.OnClickListener() {
-           public void onClick(View v) {
-
-               AsyncClass AsyncInstance = new AsyncClass();
-               AsyncInstance.execute("");
-           }
-       });
-
+        for(int i = 0;i<ArrayButtons.length;i++)
+        {
+            final int q = i;
+            ArrayButtons[i].setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    switch (event.getAction())
+                    {
+                        case MotionEvent.ACTION_DOWN:
+                            highlight(q);
+                            return true;
+                        case MotionEvent.ACTION_UP:
+                            unHighlight(q);
+                            if(q==Moves.get(currentMove))
+                            {
+                                currentMove++;
+                            }
+                            else
+                            {
+                                Log.i("LOSE","DIE");
+                            }
+                            if(currentMove>=Moves.size())
+                            {
+                                generateMove();
+                                showMoves();
+                                currentMove=0;
+                            }
+                            return true;
+                    }
+                    return true;
+                }
+            });
+        }
     }
 
     private void generateMove() {
@@ -54,14 +77,41 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void showMoves() {
-        for (int i = 0; i < Moves.size(); i++)
-        {
-            pressButton(Moves.get(i));
-        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                setButtonsEnabled(false);
+                for (int i = 0; i < Moves.size(); i++)
+                {
+                    highlight(Moves.get(i));
+                    pause(1000);
+                    unHighlight(Moves.get(i));
+                    pause(250);
+                }
+                setButtonsEnabled(true);
+            }
+        }).start();
     }
 
-    private void pressButton(int i) {
+    private void setButtonsEnabled(final boolean enabled)
+    {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                for(Button b: ArrayButtons)
+                {
+                    b.setEnabled(enabled);
+                }
+            }
+        });
 
+    }
+
+    private void pause(long millis)
+    {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {}
     }
 
     @Override
@@ -86,46 +136,35 @@ public class GameActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public class AsyncClass extends AsyncTask<String, Integer, String[]> {
+    int R1 = Color.parseColor("#FF0000");
+    int G1 = Color.parseColor("#00FF00");
+    int B1 = Color.parseColor("#0000FF");
+    int Y1 = Color.parseColor("#FFFF00");
+    int R2 = Color.parseColor("#7F0000");
+    int G2 = Color.parseColor("#007F00");
+    int B2 = Color.parseColor("#00007F");
+    int Y2 = Color.parseColor("#7F7F00");
 
-        @Override
-        protected String[] doInBackground(String... params){
+    int[] highlightedColors = {R2,G2,B2,Y2};
+    int[] unHighlightedColors = {R1,G1,B1,Y1};
 
-            try {
-                Thread.sleep(2000);
-                publishProgress(0);
-                Thread.sleep(2000);
-                publishProgress(0);
-
-                //Thread.sleep(2000);
-                //publishProgress(1);
-
-                //Thread.sleep(2000);
-                //publishProgress(2);
-
-                //Thread.sleep(2000);
-                //publishProgress(3);
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+    private void highlight(final int i)
+    {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ArrayButtons[i].setBackgroundColor(highlightedColors[i]);
             }
-
-            return new String[0];
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-
-            ArrayButtons[values[0]].getBackground().setAlpha(80);
-            ArrayButtons[values[0]].getBackground().setAlpha(255);
-
-        }
-
-        @Override
-        protected void onPostExecute(String[] result) {
-
-        }
-
+        });
     }
 
+    private void unHighlight(final int i)
+    {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ArrayButtons[i].setBackgroundColor(unHighlightedColors[i]);
+            }
+        });
+    }
 }
