@@ -40,7 +40,7 @@ public class GameActivity extends AppCompatActivity {
            public void onClick(View v) {
 
                AsyncClass AsyncInstance = new AsyncClass();
-               AsyncInstance.execute("red");
+               AsyncInstance.execute("");
            }
        });
 
@@ -94,6 +94,8 @@ public class GameActivity extends AppCompatActivity {
             try {
                 Thread.sleep(2000);
                 publishProgress(0);
+                Thread.sleep(2000);
+                publishProgress(0);
 
                 //Thread.sleep(2000);
                 //publishProgress(1);
@@ -112,18 +114,18 @@ public class GameActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(String[] result) {
-
-        }
-
-        @Override
         protected void onProgressUpdate(Integer... values) {
 
             ArrayButtons[values[0]].getBackground().setAlpha(80);
             ArrayButtons[values[0]].getBackground().setAlpha(255);
 
+        }
+
+        @Override
+        protected void onPostExecute(String[] result) {
 
         }
+
     }
 
 }
