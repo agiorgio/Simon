@@ -238,7 +238,6 @@ public class GameActivity extends AppCompatActivity {
             if (!highscoreFile.exists()) {
                 highscoreFile.createNewFile();
             }
-                //FileOutputStream outputStream = new FileOutputStream(highscoreFile, false);
                 BufferedWriter outputStream = new BufferedWriter(new FileWriter(highscoreFile, false));
                 outputStream.write(score);
                 outputStream.flush();
