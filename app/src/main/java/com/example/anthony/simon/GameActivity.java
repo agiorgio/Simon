@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedWriter;
@@ -76,6 +77,7 @@ public class GameActivity extends AppCompatActivity {
                             {
                                 currentMove++;
                                 userScore++;
+                                ScoreInProgress();
                             }
                             else
                             {
@@ -232,24 +234,33 @@ public class GameActivity extends AppCompatActivity {
         File fileDirectory = getFilesDir();
         File highscoreFile = new File(fileDirectory, "HS");
 
-        if (!highscoreFile.exists()) {
-            try {
+        try {
+            if (!highscoreFile.exists()) {
                 highscoreFile.createNewFile();
+            }
                 //FileOutputStream outputStream = new FileOutputStream(highscoreFile, false);
-                BufferedWriter outputStream = new BufferedWriter(new FileWriter(highscoreFile));
+                BufferedWriter outputStream = new BufferedWriter(new FileWriter(highscoreFile, false));
                 outputStream.write(score);
-                //outputStream.flush();
+                outputStream.flush();
                 outputStream.close();
             } catch (IOException e) {
                 e.printStackTrace();
-
             }
         }
+
+    private void ScoreInProgress () {
+        final TextView scoreView = (TextView) findViewById(R.id.textView_userScore);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                scoreView.setText(userScore + "");
+            }
+        });
     }
 
-    private void resetGame () {
+    private void resetGame() {
         userScore = 0;
+        ScoreInProgress();
         Moves.clear();
     }
-
 }
