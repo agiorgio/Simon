@@ -1,24 +1,39 @@
 package com.example.anthony.simon;
 
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
 public class GameActivity extends AppCompatActivity {
 
     int currentMove = 0;
+    int userScore = 0;
+    int highScore = 0;
 
     Button ArrayButtons [] = new Button[4];
     ArrayList<Integer> Moves = new ArrayList<Integer>();
+
+    MediaPlayer redsoundMP;
+    MediaPlayer greensoundMP;
+    MediaPlayer bluesoundMP;
+    MediaPlayer yellowsoundMP;
+
+    MediaPlayer [] sounds = new MediaPlayer[4];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,11 +45,20 @@ public class GameActivity extends AppCompatActivity {
         ArrayButtons[2] = (Button) findViewById(R.id.button_blue);
         ArrayButtons[3] = (Button) findViewById(R.id.button_yellow);
 
-        generateMove();
+        redsoundMP = MediaPlayer.create(this, R.raw.red_button_sound);
+        greensoundMP = MediaPlayer.create(this, R.raw.green_button_sound);
+        bluesoundMP = MediaPlayer.create(this, R.raw.blue_button_sound);
+        yellowsoundMP = MediaPlayer.create(this, R.raw.yellow_button_sound);
+
+        sounds [0] = redsoundMP;
+        sounds [1] = greensoundMP;
+        sounds [2] = bluesoundMP;
+        sounds [3] = yellowsoundMP;
+
         generateMove();
         showMoves();
 
-        for(int i = 0;i<ArrayButtons.length;i++)
+        for(int     i = 0;i<ArrayButtons.length;i++)
         {
             final int q = i;
             ArrayButtons[i].setOnTouchListener(new View.OnTouchListener() {
@@ -44,22 +68,32 @@ public class GameActivity extends AppCompatActivity {
                     {
                         case MotionEvent.ACTION_DOWN:
                             highlight(q);
+
                             return true;
                         case MotionEvent.ACTION_UP:
                             unHighlight(q);
                             if(q==Moves.get(currentMove))
                             {
                                 currentMove++;
+                                userScore++;
                             }
                             else
                             {
-                                Log.i("LOSE","DIE");
+                                highScore = fileRead();
+                                if (userScore > highScore) {
+                                    highScore = userScore;
+                                    fileWrite(userScore);
+                                }
+
+                                Toast.makeText(getApplicationContext(), "Game over, your score is " + userScore +
+                                        ". The high score is " + highScore + ".", Toast.LENGTH_SHORT).show();
+                                resetGame();
                             }
                             if(currentMove>=Moves.size())
                             {
                                 generateMove();
                                 showMoves();
-                                currentMove=0;
+                                currentMove = 0;
                             }
                             return true;
                     }
@@ -156,15 +190,66 @@ public class GameActivity extends AppCompatActivity {
                 ArrayButtons[i].setBackgroundColor(highlightedColors[i]);
             }
         });
+
+        sounds[i].start();
     }
 
-    private void unHighlight(final int i)
-    {
+    private void unHighlight(final int i) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 ArrayButtons[i].setBackgroundColor(unHighlightedColors[i]);
             }
         });
+
+        sounds[i].pause();
+        sounds[i].seekTo(0);
     }
+
+    private int fileRead () {
+
+        int score = 0;
+        File fileDirectory = getFilesDir();
+        File highscoreFile = new File(fileDirectory, "HS");
+
+        if (!highscoreFile.exists()|| highscoreFile.length() == 0) {
+
+            return 0;
+        }
+
+        try {
+            FileInputStream inputStream = new FileInputStream(highscoreFile);
+            score = inputStream.read();
+            inputStream.close();
+        } catch (java.io.IOException e) {
+            return 0;
+        }
+        return score;
+    }
+
+    private void fileWrite(int score) {
+
+        File fileDirectory = getFilesDir();
+        File highscoreFile = new File(fileDirectory, "HS");
+
+        if (!highscoreFile.exists()) {
+            try {
+                highscoreFile.createNewFile();
+                //FileOutputStream outputStream = new FileOutputStream(highscoreFile, false);
+                BufferedWriter outputStream = new BufferedWriter(new FileWriter(highscoreFile));
+                outputStream.write(score);
+                //outputStream.flush();
+                outputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+
+            }
+        }
+    }
+
+    private void resetGame () {
+        userScore = 0;
+        Moves.clear();
+    }
+
 }

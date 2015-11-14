@@ -7,12 +7,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileInputStream;
 
 public class StartScreenActivity extends AppCompatActivity {
 
     Button button_start;
     Button button_soundsettings;
     Button button_highscore;
+    Button button_deletehighscore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +32,24 @@ public class StartScreenActivity extends AppCompatActivity {
                 startActivity(new Intent(StartScreenActivity.this, GameActivity.class));
             }
         });
+
+        button_highscore = (Button) findViewById(R.id.button_highscore);
+        button_highscore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int highScore = fileRead();
+                Toast.makeText(getApplicationContext(), "The high score is " + highScore + ".", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        button_deletehighscore = (Button) findViewById(R.id.button_deletehighscore);
+        button_deletehighscore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fileDelete();
+            }
+        });
+
 
     }
 
@@ -50,5 +73,33 @@ public class StartScreenActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private int fileRead() {
+
+        int score = 0;
+        File fileDirectory = getFilesDir();
+        File highscoreFile = new File(fileDirectory, "HS");
+
+        if (!highscoreFile.exists()|| highscoreFile.length() == 0) {
+
+            return 0;
+        }
+
+        try {
+            FileInputStream inputStream = new FileInputStream(highscoreFile);
+            score = inputStream.read();
+            inputStream.close();
+        } catch (java.io.IOException e) {
+            return 0;
+        }
+        return score;
+    }
+
+    private void fileDelete() {
+
+        File fileDirectory = getFilesDir();
+        File highscoreFile = new File(fileDirectory, "HS");
+        highscoreFile.delete();
     }
 }
